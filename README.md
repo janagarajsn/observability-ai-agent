@@ -1,62 +1,100 @@
 # Observability AI Agent
 
-An intelligent observability platform built on **RAG (Retrieval-Augmented Generation) Agent Architecture** that leverages AI to analyze system logs and tickets, providing automated insights and query capabilities for infrastructure monitoring and incident management.
+An intelligent observability platform powered by a **LangChain ReAct Agent + RAG Retrieval Pipeline**, enabling AI-driven analysis of system logs, incidents, and operational data. The agent uses natural language reasoning, tool execution, and vector-based retrieval to answer operational queries and assist in incident diagnosis.
 
 ## Overview
 
-This project implements a **RAG (Retrieval-Augmented Generation) Agent Architecture** that combines the power of Large Language Models (LLMs) with vector databases to create an intelligent observability system. The RAG approach enables the system to retrieve relevant context from your logs and tickets before generating responses, ensuring accurate and contextually-aware answers to your queries.
+This project implements a **ReAct (Reasoning + Action) AI Agent** enhanced with **RAG-style retrieval**, combining:
+
+- 🔹 **LangChain Agent** for reasoning + tool orchestration
+- 🔹 **Qdrant vector search** for semantic log and ticket retrieval
+- 🔹 **OpenAI LLM** for analysis, summarization, and contextual responses
+
+The agent chooses tools such as log search, ticket search, and summarization using the ReAct framework, while the retrieval layer ensures contextual accuracy.
 
 ![Architecture Diagram](images/arch.png)
 
-### RAG Architecture Benefits
+### Why ReAct + RAG?
 
-- **Contextual Accuracy**: Retrieves relevant log entries and tickets before generating responses
-- **Real-time Knowledge**: Works with your actual data, not just pre-trained knowledge
-- **Semantic Search**: Uses vector embeddings to find semantically similar content
-- **Scalable**: Handles large volumes of logs and tickets efficiently
+This project is not just RAG — it is an **AI Agent that uses tools, with RAG as one of those tools**.
+
+#### Benefits
+
+- **Tool-Using Intelligence**  
+  The agent selects tools like `SearchLogs`, `SearchTickets`, and `SummarizeLogs` through natural language reasoning.
+
+- **Contextual Retrieval (RAG)**  
+  The system retrieves relevant logs and incident tickets using vector embeddings.
+
+- **Structured Reasoning (ReAct)**  
+  The LLM thinks step-by-step, chooses tools, evaluates results, then forms a final answer.
+
+- **Operational Awareness**  
+  Query logs, analyze incidents, and detect anomalies using natural language.
 
 ![RAG Architecture](images/rag-overview.png)
 
-### Key Features
+## Key Features
 
-- **RAG-Powered Analysis**: Retrieval-Augmented Generation for contextually accurate responses
-- **AI-Powered Log Analysis**: Query your logs using natural language with semantic understanding
-- **Intelligent Ticket Management**: Automated ticket generation and analysis with context retrieval
-- **Vector Search**: Advanced semantic search capabilities using Qdrant vector database
-- **LangChain Agents**: Sophisticated AI agents that can reason and use tools
-- **RESTful API**: FastAPI-based backend for programmatic access
-- **Interactive UI**: Streamlit-based web interface for easy interaction
-- **Docker Support**: Containerized deployment with Docker Compose
+- **ReAct-Agent Architecture**: LLM chooses tools and reasons step-by-step
+- **RAG-Enhanced Retrieval**: Semantic search on logs and tickets via Qdrant
+- **AI Log Analysis**: Natural language analysis of logs with threshold-based retrieval
+- **Incident Ticket Reasoning**: Fetch and summarize related incident tickets
+- **Callback Tracing**: Full visibility into tool selection and agent decisions
+- **RESTful API**: FastAPI for accessing agent features programmatically
+- **Interactive UI**: Streamlit interface for user-friendly querying
+- **Dockerized Deployment**: Full deployment stack with Docker Compose
 
-## RAG Agent Architecture
+---
 
-The system implements a sophisticated RAG (Retrieval-Augmented Generation) architecture with the following key components:
+# ReAct Agent + RAG Architecture
 
-### Core RAG Components
+This project blends **two powerful patterns**:
 
-- **Observability Engine**: Core RAG agent powered by LangChain and OpenAI that orchestrates retrieval and generation
-- **Vector Store**: Qdrant database storing embedded representations of logs and tickets
-- **Embedding Pipeline**: Converts logs and tickets into high-dimensional vectors for semantic search
-- **Retrieval System**: Finds relevant context based on semantic similarity to user queries
-- **Generation Layer**: LLM that generates responses augmented with retrieved context
+---
 
-### Supporting Infrastructure
+## 1. ReAct Agent (Reasoning + Actions)
 
-- **Log Ingestor**: Processes, chunks, and vectorizes log files for the RAG pipeline
-- **Ticket System**: Generates and manages incident tickets with vector embeddings
-- **API Layer**: FastAPI endpoints exposing RAG capabilities
-- **Web Interface**: Streamlit dashboard for interactive RAG queries
+A LangChain agent that:
 
-### RAG Workflow
+- Interprets user queries
+- Decides which tool to call
+- Performs retrieval via Qdrant
+- Summarizes findings
+- Returns a final answer
 
-1. **Ingestion**: Logs and tickets are processed, chunked, and embedded into vectors
-2. **Storage**: Vector embeddings are stored in Qdrant with metadata
-3. **Query**: User submits natural language query
-4. **Retrieval**: System finds semantically similar content from vector store
-5. **Augmentation**: Retrieved context is combined with the user query
-6. **Generation**: LLM generates contextually-aware response
+The agent uses the following tools:
 
-## Project Structure
+- `SearchLogs`
+- `SearchTickets`
+- `SummarizeLogs`
+
+---
+
+## 2. RAG Retrieval Layer
+
+Used as a tool _inside_ the agent.
+
+Core components:
+
+- **Embeddings**: `text-embedding-3-small`
+- **Vector Store**: Qdrant
+- **Threshold Retriever**: A custom retriever with similarity filtering
+- **Metadata Enrichment**: Includes scores and ticket IDs
+
+---
+
+# Architecture Workflow
+
+1. **User Query** → Natural language question
+2. **Agent Reasoning (ReAct)** → LLM decides which tool to use
+3. **Semantic Retrieval (RAG)** → Fetches logs/tickets from vector store
+4. **Threshold Filtering** → Removes low-relevance results
+5. **LLM Generation** → Final answer enriched with retrieved context
+
+---
+
+# Project Structure
 
 ```
 observability-ai-agent/
@@ -221,7 +259,7 @@ The observability engine uses LangChain agents. To add new capabilities:
 
 Key Python packages for RAG implementation:
 
-- **LangChain**: RAG agent framework and orchestration
+- **LangChain**: RAG agent framework and Agent orchestration
 - **OpenAI**: LLM for generation and embedding models for retrieval
 - **Qdrant**: Vector database for storing and searching embeddings
 - **FastAPI**: Web API framework for RAG endpoints
